@@ -2,40 +2,31 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"net/http"
 )
 
-const (
-	Host = "localhost"
-	Port = "8080"
-)
-
-type Student struct {
-	Name       string
-	College    string
-	RollNumber int
+type Todo struct {
+	Title string
+	Done  bool
 }
 
-func renderTemplate(w http.ResponseWriter, r *http.Request) {
-	student := Student{
-		Name:       "GB",
-		College:    "GolangBlogs",
-		RollNumber: 1,
-	}
-	parsedTemplate, _ := template.ParseFiles("Template/index.html")
-	err := parsedTemplate.Execute(w, student)
-	if err != nil {
-		log.Println("Error executing template :", err)
-		return
-	}
+type TodoPageData struct {
+	PageTitle string
+	Todos     []Todo
 }
 
 func main() {
-	http.HandleFunc("/", renderTemplate)
-	err := http.ListenAndServe(Host+":"+Port, nil)
-	if err != nil {
-		log.Fatal("Error Starting the HTTP Server :", err)
-		return
-	}
+	tmpl := template.Must(template.ParseFiles("layout.html"))
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		data := TodoPageData{
+			PageTitle: "My TODO list",
+			Todos: []Todo{
+				{Title: "Task 1", Done: false},
+				{Title: "Task 2", Done: true},
+				{Title: "Task 3", Done: true},
+			},
+		}
+		tmpl.Execute(w, data)
+	})
+	http.ListenAndServe(":80", nil)
 }
