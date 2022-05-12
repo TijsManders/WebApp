@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="css.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Go Template</title>
+</head>
+
+<body>
+    <h1>{{.PageTitle}}</h1>
+    <ul>
+        {{range .Todos}}
+            {{if .Done}}
+                <li class="done">{{.Title}}</li>
+            {{else}}
+                <li>{{.Title}}</li>
+            {{end}}
+        {{end}}
+    </ul>
+    <h1>
+        Alarm aanzetten
+    </h1>
+    <div>
+    <!-- <button type="submit" id="primary">Klik mij</button> -->
+    <button type="submit" id="primary" style="background-color: green">klik mij</button>
+    <script src="index.js"></script>
+    </div>
+</body>
+</html>
