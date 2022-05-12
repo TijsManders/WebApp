@@ -16,14 +16,33 @@ type TodoPageData struct {
 	Todos     []Todo
 }
 
+type RadioButton struct {
+	Name       string
+	Value      string
+	IsDisabled bool
+	IsChecked  bool
+	Text       string
+}
+
+type PageVariables struct {
+	PageTitle        string
+	PageRadioButtons []RadioButton
+	Answer           string
+}
+
 func main() {
-	http.HandleFunc("/", HomePage)
+	http.HandleFunc("/", DisplayRadioButtons)
 	http.ListenAndServe(":80", nil)
 
 }
 
-func HomePage(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("index.html"))
+func DisplayRadioButtons(w http.ResponseWriter, r *http.Request) {
+	Title := "Alarm Activatie"
+	MyRadioButtons := []RadioButton{
+		RadioButton{}
+	}
+
+
 	data := TodoPageData{
 		PageTitle: "My TODO list",
 		Todos: []Todo{
@@ -34,6 +53,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	}
 	value := r.Form.Get("Activatie")
 	fmt.Println(value)
+	tmpl := template.Must(template.ParseFiles("index.html"))
 	tmpl.Execute(w, data)
 }
 
