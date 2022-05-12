@@ -19,13 +19,29 @@
             {{end}}
         {{end}}
     </ul>
-    <h1>
-        Alarm aanzetten
-    </h1>
-    <div>
-    <!-- <button type="submit" id="primary">Klik mij</button> -->
-    <button type="submit" id="primary" style="background-color: green">klik mij</button>
-    <script src="index.js"></script>
-    </div>
-</body>
+    <fieldset>
+        <legend>Alarm Activatie</legend>
+        <div>
+          <input type="radio" name="Activatie" value="Geactiveerd" checked>
+          <label for="Geactiveerd">Geactiveerd</label>
+        </div>
+    
+        <div>
+          <input type="radio" name="Activatie" value="Gedeactiveerd">
+          <label for="Gedeactiveerd">Gedeactiveerd</label>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Alarm Status</legend>
+        <div>
+          <input type="radio" name="Status" value="Aan">
+          <label for="Aan">Aan</label>
+        </div>
+    
+        <div>
+          <input type="radio" name="Status" value="Uit" checked>
+          <label for="Uit">Uit</label>
+        </div>
+    </fieldset>
+    </body>
 </html>
