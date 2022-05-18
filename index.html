@@ -2,23 +2,12 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="css.css">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Go Template</title>
+    <title>SecureIT</title>
 </head>
 
 <body>
-    <h1>{{.PageTitle}}</h1>
-    <ul>
-        {{range .Todos}}
-            {{if .Done}}
-                <li class="done">{{.Title}}</li>
-            {{else}}
-                <li>{{.Title}}</li>
-            {{end}}
-        {{end}}
-    </ul>
     <form method="post">
     <fieldset>
         <legend>Alarm Activatie</legend>
@@ -35,12 +24,12 @@
     <fieldset>
         <legend>Alarm Status</legend>
         <div>
-          <input type="radio" name="Status" value="Aan">
+          <input type="radio" name="Status" value="true" {{if .AlarmAan}} checked {{end}}>
           <label for="Aan">Aan</label>
         </div>
     
         <div>
-          <input type="radio" name="Status" value="Uit" checked>
+          <input type="radio" name="Status" value="false" {{if not .AlarmAan}} checked {{end}}>
           <label for="Uit">Uit</label>
         </div>
     </fieldset>

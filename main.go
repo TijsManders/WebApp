@@ -8,84 +8,126 @@ import (
 	"strconv"
 )
 
-type Todo struct {
-	Title string
-	Done  bool
-}
-
 type TodoPageData struct {
-	PageTitle   string
-	Todos       []Todo
 	AlarmActive bool
+	AlarmAan    bool
 }
 
-// type RadioButton struct {
-// 	Name       string
-// 	Value      string
-// 	IsDisabled bool
-// 	IsChecked  bool
-// 	Text       string
-// }
+var (
+	ActivatieValue bool
+	AlarmValue     bool
+)
 
-// type PageVariables struct {
-// 	PageTitle        string
-// 	PageRadioButtons []RadioButton
-// 	Answer           string
+func main() {
+	Handlerequests()
+}
+
+func Handlerequests() {
+	http.HandleFunc("/", RadioButtons)
+	http.HandleFunc("/", Get)
+	http.ListenAndServe(":80", nil)
+}
+
+func Get(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		tmpl := template.Must(template.ParseFiles("index.html"))
+		err := r.ParseForm()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		ActivatieV, err := strconv.ParseBool(r.Form.Get("Activatie"))
+		if err != nil {
+			log.Fatal(err)
+		}
+		ActivatieValue = ActivatieV
+		fmt.Println(ActivatieValue, "Tijs")
+
+		AlarmV, err := strconv.ParseBool(r.Form.Get("Status"))
+		if err != nil {
+			log.Fatal(err)
+		}
+		AlarmValue = AlarmV
+		fmt.Println(AlarmValue, "Niet Tijs")
+
+		data := TodoPageData{
+			AlarmActive: ActivatieValue,
+			AlarmAan:    AlarmValue,
+		}
+		tmpl.Execute(w, data)
+	}
+}
+
+func RadioButtons(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		err := r.ParseForm()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		ActivatieV, err := strconv.ParseBool(r.Form.Get("Activatie"))
+		if err != nil {
+			log.Fatal(err)
+		}
+		ActivatieValue = ActivatieV
+		fmt.Println(ActivatieValue, "Tijs")
+
+		AlarmV, err := strconv.ParseBool(r.Form.Get("Status"))
+		if err != nil {
+			log.Fatal(err)
+		}
+		AlarmValue = AlarmV
+		fmt.Println(AlarmValue, "Niet Tijs")
+	}
+}
+
+// package main
+
+// import (
+// 	"fmt"
+// 	"html/template"
+// 	"log"
+// 	"net/http"
+// 	"strconv"
+// )
+
+// type TodoPageData struct {
+// 	AlarmActive bool
+// 	AlarmAan    bool
 // }
 
 // func main() {
-// 	http.HandleFunc("/", DisplayRadioButtons)
-// 	http.ListenAndServe(":80", nil)
-
-// }
-
-// func DisplayRadioButtons(w http.ResponseWriter, r *http.Request) {
-// 	Title := "Alarm Activatie"
-// 	MyRadioButtons := []RadioButton{
-// 		RadioButton{}
-// 	}
-
-// 	data := TodoPageData{
-// 		PageTitle: "My TODO list",
-// 		Todos: []Todo{
-// 			{Title: "Task 1", Done: false},
-// 			{Title: "Task 2", Done: true},
-// 			{Title: "Task 3", Done: true},
-// 		},
-// 	}
-// 	value := r.Form.Get("Activatie")
-// 	fmt.Println(value)
 // 	tmpl := template.Must(template.ParseFiles("index.html"))
-// 	tmpl.Execute(w, data)
-//}
+// 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+// 		var ActivatieValue bool
+// 		var AlarmValue bool
 
-func main() {
-	tmpl := template.Must(template.ParseFiles("index.html"))
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		var value bool
-		if r.Method == http.MethodPost {
-			err := r.ParseForm()
-			if err != nil {
-				log.Fatal(err)
-			}
-			v, err := strconv.ParseBool(r.Form.Get("Activatie"))
-			if err != nil {
-				log.Fatal(err)
-			}
-			value = v
-			fmt.Println(value, "Tijs")
-		}
-		data := TodoPageData{
-			PageTitle:   "My TODO list",
-			AlarmActive: value,
-			Todos: []Todo{
-				{Title: "Task 1", Done: false},
-				{Title: "Task 2", Done: true},
-				{Title: "Task 3", Done: true},
-			},
-		}
+// 		if r.Method == http.MethodPost {
+// 			err := r.ParseForm()
+// 			if err != nil {
+// 				log.Fatal(err)
+// 			}
+// 			ActivatieV, err := strconv.ParseBool(r.Form.Get("Activatie"))
+// 			if err != nil {
+// 				log.Fatal(err)
+// 			}
+// 			ActivatieValue = ActivatieV
+// 			fmt.Println(ActivatieValue, "Tijs")
 
-		tmpl.Execute(w, data)
-	})
-	http.ListenAndServe(":80", nil)
-}
+// 			AlarmV, err := strconv.ParseBool(r.Form.Get("Status"))
+// 			if err != nil {
+// 				log.Fatal(err)
+// 			}
+// 			AlarmValue = AlarmV
+// 			fmt.Println(AlarmValue, "Niet Tijs")
+
+// 		}
+// 		data := TodoPageData{
+// 			AlarmActive: ActivatieValue,
+// 			AlarmAan:    AlarmValue,
+// 		}
+
+// 		tmpl.Execute(w, data)
+// 	})
+// 	http.ListenAndServe(":80", nil)
+// }
