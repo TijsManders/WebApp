@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -13,72 +15,65 @@ type TodoPageData struct {
 	AlarmAan    bool
 }
 
+type AlarmData struct {
+	Activatie bool `json:"Activatie"`
+	Alarm     bool `json:"Alarm"`
+}
+
 var (
 	ActivatieValue bool
 	AlarmValue     bool
 )
 
 func main() {
-	Handlerequests()
-}
-
-func Handlerequests() {
 	http.HandleFunc("/", RadioButtons)
-	http.HandleFunc("/", Get)
 	http.ListenAndServe(":80", nil)
 }
 
-func Get(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		tmpl := template.Must(template.ParseFiles("index.html"))
-		err := r.ParseForm()
-		if err != nil {
-			log.Fatal(err)
+func StuurNaarAPI(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		fmt.Println("Dit werkt ook")
+		AlarmDataAPI := []AlarmData{
+			{Activatie: ActivatieValue},
+			{Alarm: AlarmValue},
 		}
-
-		ActivatieV, err := strconv.ParseBool(r.Form.Get("Activatie"))
-		if err != nil {
-			log.Fatal(err)
+		payloadBuf := new(bytes.Buffer)
+		json.NewEncoder(payloadBuf).Encode(AlarmDataAPI)
+		req, _ := http.NewRequest("POST", "localhost", payloadBuf)
+		if req == nil {
+			fmt.Println("hallo reg is nil")
 		}
-		ActivatieValue = ActivatieV
-		fmt.Println(ActivatieValue, "Tijs")
-
-		AlarmV, err := strconv.ParseBool(r.Form.Get("Status"))
-		if err != nil {
-			log.Fatal(err)
-		}
-		AlarmValue = AlarmV
-		fmt.Println(AlarmValue, "Niet Tijs")
-
-		data := TodoPageData{
-			AlarmActive: ActivatieValue,
-			AlarmAan:    AlarmValue,
-		}
-		tmpl.Execute(w, data)
 	}
 }
 
 func RadioButtons(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("index.html"))
 	if r.Method == http.MethodPost {
 		err := r.ParseForm()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		ActivatieV, err := strconv.ParseBool(r.Form.Get("Activatie"))
+		ActivatieV, err := strconv.ParseBool(r.Form.Get("ActivatieStatus"))
 		if err != nil {
 			log.Fatal(err)
 		}
 		ActivatieValue = ActivatieV
 		fmt.Println(ActivatieValue, "Tijs")
 
-		AlarmV, err := strconv.ParseBool(r.Form.Get("Status"))
+		AlarmV, err := strconv.ParseBool(r.Form.Get("AlarmStatus"))
 		if err != nil {
 			log.Fatal(err)
 		}
 		AlarmValue = AlarmV
 		fmt.Println(AlarmValue, "Niet Tijs")
 	}
+	data := TodoPageData{
+		AlarmActive: ActivatieValue,
+		AlarmAan:    AlarmValue,
+	}
+	tmpl.Execute(w, data)
+	StuurNaarAPI(w, r)
 }
 
 // package main

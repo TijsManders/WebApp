@@ -12,24 +12,24 @@
     <fieldset>
         <legend>Alarm Activatie</legend>
         <div>
-          <input type="radio" name="Activatie" value="true"  {{if .AlarmActive}} checked {{end}}>
+          <input type="radio" name="ActivatieStatus" value="true"  {{if .AlarmActive}} checked {{end}}>
           <label for="Geactiveerd">Geactiveerd</label>
         </div>
     
         <div>
-          <input type="radio" name="Activatie" value="false" {{if not .AlarmActive}} checked {{end}}>
+          <input type="radio" name="ActivatieStatus" value="false" {{if not .AlarmActive}} checked {{end}}>
           <label for="Gedeactiveerd">Gedeactiveerd</label>
         </div>
     </fieldset>
     <fieldset>
         <legend>Alarm Status</legend>
         <div>
-          <input type="radio" name="Status" value="true" {{if .AlarmAan}} checked {{end}}>
+          <input type="radio" name="AlarmStatus" value="true" {{if .AlarmAan}} checked {{end}}>
           <label for="Aan">Aan</label>
         </div>
     
         <div>
-          <input type="radio" name="Status" value="false" {{if not .AlarmAan}} checked {{end}}>
+          <input type="radio" name="AlarmStatus" value="false" {{if not .AlarmAan}} checked {{end}}>
           <label for="Uit">Uit</label>
         </div>
     </fieldset>
