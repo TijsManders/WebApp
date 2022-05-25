@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -23,11 +24,23 @@ type AlarmData struct {
 var (
 	ActivatieValue bool
 	AlarmValue     bool
+	SecureIT       []AlarmData
 )
 
 func main() {
+
 	http.HandleFunc("/", RadioButtons)
+	http.HandleFunc("/api", OntvangAPI)
 	http.ListenAndServe(":80", nil)
+}
+
+func OntvangAPI(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "API pagina")
+	reqBody, _ := ioutil.ReadAll(r.Body)
+	var aData AlarmData
+	json.Unmarshal(reqBody, &aData)
+	SecureIT = append(SecureIT, aData)
+	json.NewEncoder(w).Encode(aData)
 }
 
 func StuurNaarAPI(w http.ResponseWriter, r *http.Request) {
@@ -75,54 +88,3 @@ func RadioButtons(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, data)
 	StuurNaarAPI(w, r)
 }
-
-// package main
-
-// import (
-// 	"fmt"
-// 	"html/template"
-// 	"log"
-// 	"net/http"
-// 	"strconv"
-// )
-
-// type TodoPageData struct {
-// 	AlarmActive bool
-// 	AlarmAan    bool
-// }
-
-// func main() {
-// 	tmpl := template.Must(template.ParseFiles("index.html"))
-// 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-// 		var ActivatieValue bool
-// 		var AlarmValue bool
-
-// 		if r.Method == http.MethodPost {
-// 			err := r.ParseForm()
-// 			if err != nil {
-// 				log.Fatal(err)
-// 			}
-// 			ActivatieV, err := strconv.ParseBool(r.Form.Get("Activatie"))
-// 			if err != nil {
-// 				log.Fatal(err)
-// 			}
-// 			ActivatieValue = ActivatieV
-// 			fmt.Println(ActivatieValue, "Tijs")
-
-// 			AlarmV, err := strconv.ParseBool(r.Form.Get("Status"))
-// 			if err != nil {
-// 				log.Fatal(err)
-// 			}
-// 			AlarmValue = AlarmV
-// 			fmt.Println(AlarmValue, "Niet Tijs")
-
-// 		}
-// 		data := TodoPageData{
-// 			AlarmActive: ActivatieValue,
-// 			AlarmAan:    AlarmValue,
-// 		}
-
-// 		tmpl.Execute(w, data)
-// 	})
-// 	http.ListenAndServe(":80", nil)
-// }
