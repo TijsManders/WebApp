@@ -31,7 +31,8 @@ func main() {
 
 	http.HandleFunc("/", RadioButtons)
 	http.HandleFunc("/api", OntvangAPI)
-	http.ListenAndServe(":80", nil)
+	fmt.Println("Het dashboard is ")
+	http.ListenAndServe(":5000", nil)
 }
 
 func OntvangAPI(w http.ResponseWriter, r *http.Request) {
